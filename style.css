@@ -19,7 +19,7 @@ body {
 
 #controls {
   border: 1px black solid;
-  padding: 5px;
+  padding: 5px;    /* set space with the side */
 }
 
 #stats {
@@ -29,7 +29,7 @@ body {
 }
 
 #monsterStats {
-  display: none;
+  display: none; /* don't show the monster stats before you're fighting with monster*/
   border: 1px black solid;
   color: white;
   padding: 5px;
