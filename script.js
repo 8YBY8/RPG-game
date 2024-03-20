@@ -60,32 +60,44 @@ const locations = [
     {
         name: "town square",
         "button text": ["Go to store", "Go to cave", "Fight dragon"],
-        "button click": [goStore, goCave, fightDragon],
+        "button functions": [goStore, goCave, fightDragon],
         text: "You are in town square. You see a sign that says \"Store.\" "
     },
     {
         name: "store",
         "button text": ["Buy 10 health (10 gold)", "Buy weapon (30 gold)", "Go to town square"],
-        "button click": [buyHealth, buyWeapon, goTown],
+        "button functions": [buyHealth, buyWeapon, goTown],
         text: "You enter the store."
     },
     {
-        name: "cove",
+        name: "cave",
         "button text": ["Fight slime", "Fight beast", "Run"],
-        "button click": [fightSlime, fightBeast, goTown],
+        "button functions": [fightSlime, fightBeast, goTown],
         text: "You enter the cave. You see some monsters."
     },
     {
+		name: "fight",
+		"button text": ["Attack", "Dodge", "Run"],
+		"button functions": [attack, dodge, goTown],
+		text: "You are fighting a monster."
+	},
+    {
         name: "kill monster",
         "button text": ["Go to town square", "Go to town square", "Go to town square"],
-        "button click": [goTown, goTown, goTown],
+        "button functions": [goTown, goTown, goTown],
         text: "You killed monster! As it dies, you gain experience points and find gold."
     },
     {
         name: "lose",
         "button text": ["REPLAY?", "REPLAY?", "REPLAY?"],
-        "button click": [restart, restart, restart],
+        "button functions": [restart, restart, restart],
         text: "You die."
+    },
+    {
+        name: "win",
+        "button text": ["REPLAY?", "REPLAY?", "REPLAY?"],
+        "button functions": [restart, restart, restart],
+        text: "You defeat the dragon! YOU WIN THE GAME!."
     }
 ]
 
@@ -99,9 +111,9 @@ function update(location) {
     button1.innerText = location["button text"][0];
     button2.innerText = location["button text"][1];
     button3.innerText = location["button text"][2];
-    button1.onclick = location["button click"][0];
-    button2.onclick = location["button click"][1];
-    button3.onclick = location["button click"][2];
+    button1.onclick = location["button functions"][0];
+    button2.onclick = location["button functions"][1];
+    button3.onclick = location["button functions"][2];
     text.innerText = location.text;  // dot. notation only works when there only is one element
 }
 
@@ -132,9 +144,10 @@ function buyHealth() {
 }
 
 function buyWeapon() {
-    if (currentWeapon < weapons.length() - 1) {
+    if (currentWeapon < weapons.length - 1) {
         if (gold >= 30) {
             gold -= 30;
+            goldText.innerText = gold;
             currentWeapon++;
             let newWeapon = weapons[currentWeapon].name;
             inventory.push(newWeapon);
@@ -181,14 +194,15 @@ function fightDragon() {
 
 function goFight() {
     update(locations[3]);
-    monsterHealth - monsters[fighting].health;
+    monsterHealth = monsters[fighting].health;
     monsterStats.style.display = "block"; // display the monster's states
     monsterNameText.innerText = monsters[fighting].name;
     monsterHealthText.innerText = monsterHealth;
 }
 
 function attack() {
-    text.innerText = "The" + monsters[fighting].name + " attacks.";
+    console.log("attack gunction");
+    text.innerText = "The " + monsters[fighting].name + " attacks.";
     text.innerText += " You attack it with your " + weapons[currentWeapon].name + ".";
     health -= monsters[fighting].level;
     // attack monster with the weapon power and random damage based on xp
@@ -201,13 +215,14 @@ function attack() {
         lose();
     }
     else if (monsterHealth <= 0) {
-        if (fighting === 2) {
-            winGame();
-        }
-        else {
-            defeatMonster();
-        }
-        
+        // if (fighting === 2) {
+        //     winGame();
+        // }
+        // else {
+        //     defeatMonster();
+        // }
+        // short way to write above codes 
+        fighting === 2 ? winGame() : defeatMonster();   // if true winGame() else defeatMonster
     }
 }
 
@@ -220,7 +235,7 @@ function lose() {
 }
 
 function defeatMonster() {
-    gold += Math.floor(monsters[fighting].level * 6.7);
+    gold += Math.floor(monsters[fighting].level * 6.7)
     xp += monsters[fighting].level;
     goldText.innerText = gold;
     xpText.innerText = xp;
@@ -240,5 +255,5 @@ function restart() {
 }
 
 function winGame() {
-    
+    update(locations[6]);
 }
